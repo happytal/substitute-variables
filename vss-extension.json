@@ -1,0 +1,48 @@
+{
+  "manifestVersion": 1,
+  "id": "substitutevariables",
+  "name": "Substitute Variables",
+  "version": "1.0.0",
+  "publisher": "happytal",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],    
+  "description": "Apply variable substitution to JSON and YAML files.",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "icons": {
+    "default": "images/extension-icon.png"        
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/happytal/substitute-variables"
+  },
+  "content": {
+    "details": {
+      "path": "README.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "files": [
+    {
+      "path": "task"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "substitutevariables-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "task"
+      }
+    }
+  ]
+}

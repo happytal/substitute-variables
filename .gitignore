@@ -1,0 +1,5 @@
+node_modules/
+task/**/*.js
+*.log
+*.vsix
+.taskkey
