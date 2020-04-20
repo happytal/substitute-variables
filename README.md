@@ -12,6 +12,15 @@ Features:
 
 ## Usage
 
+```
+steps:
+- task: SubstituteVariables@1
+  inputs:
+    files: |
+      values.yaml
+      values.json
+```
+
 The task has a single parameter for the list of files. They will be overwritten,
 substituting the value of any key matching the name of a pipeline variable with
 the value of the variable.
