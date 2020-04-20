@@ -43,7 +43,13 @@ function findNodeParentFromJsonPath(jsonContent: any, jsonPath: jp.PathComponent
 
 function substituteVariables(objectContent: any) {
   for (const variable of task.getVariables()) {
-    const matchingPaths = jp.paths(objectContent, variable.name, 1)
+    let matchingPaths
+    try {
+      matchingPaths = jp.paths(objectContent, variable.name, 1)
+    } catch (err) {
+      task.debug(`Variable ${variable.name} is not a valid JSON path: ${err.message}`)
+      continue
+    }
     if (matchingPaths.length === 0) {
       task.debug(`No JSON path found matching variable ${variable.name}`)
       continue

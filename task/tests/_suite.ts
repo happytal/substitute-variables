@@ -223,4 +223,16 @@ describe('Substitute variables task', () => {
     done()
   })
 
+  it('should not fail when variable cannot be parsed', (done: MochaDone) => {
+    fs.writeFileSync(_tmpFile.name, yaml.safeDump(SAMPLE_FILE))
+
+    const runner = runTask(new Map([ ['METADATA_26b0cd9d-186c-4db3-a1d6-7ae4', 'foo'] ]))
+
+    assert.equal(runner.succeeded, true)
+    assert.equal(runner.warningIssues.length, 0)
+    assert.equal(runner.errorIssues.length, 0)
+
+    done()
+  })
+
 })
