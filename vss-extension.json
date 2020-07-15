@@ -2,13 +2,14 @@
   "manifestVersion": 1,
   "id": "substitutevariables",
   "name": "Substitute Variables",
-  "version": "1.0.1",
+  "version": "1.0.5",
+  "public": true,
   "publisher": "happytal",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
-  ],    
+  ],
   "description": "Apply variable substitution to JSON and YAML files.",
   "categories": [
     "Azure Pipelines"
