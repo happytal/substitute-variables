@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "substitutevariables",
   "name": "Substitute Variables",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "public": true,
   "publisher": "happytal",
   "targets": [
