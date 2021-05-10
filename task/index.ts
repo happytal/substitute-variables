@@ -19,7 +19,7 @@ function serializeJsonContent(jsonContent: any) {
 
 function parseYamlContent(fileContent: string) {
   try {
-    return yaml.safeLoad(fileContent)
+    return yaml.safeLoadAll(fileContent)
   }
   catch (err) {
     task.debug(`File could not be parsed as YAML: ${err.message}`)
@@ -27,8 +27,8 @@ function parseYamlContent(fileContent: string) {
   }
 }
 
-function serializeYamlContent(yamlContent: any) {
-  return yaml.safeDump(yamlContent)
+function serializeYamlContent(yamlContentArray: any) {
+  return yamlContentArray.map((yamlContent: any) => yaml.safeDump(yamlContent)).join('---\n');
 }
 
 function findNodeParentFromJsonPath(jsonContent: any, jsonPath: jp.PathComponent[]) {
@@ -102,10 +102,12 @@ function run() {
         substituteVariables(jsonContent)
         fs.writeFileSync(filePath, serializeJsonContent(jsonContent))
       } else {
-        const yamlContent = parseYamlContent(stringContent)
-        if (yamlContent && typeof yamlContent === 'object') {
-          substituteVariables(yamlContent)
-          fs.writeFileSync(filePath, serializeYamlContent(yamlContent))
+        const yamlContentArray = parseYamlContent(stringContent)
+        if (yamlContentArray && Array.isArray(yamlContentArray) && yamlContentArray.every(yamlContent => typeof yamlContent === 'object')) {
+          for (const yamlContent of yamlContentArray) {
+            substituteVariables(yamlContent)
+          }
+          fs.writeFileSync(filePath, serializeYamlContent(yamlContentArray))
         } else {
           task.setResult(task.TaskResult.Failed, `File ${filePath} is neither JSON nor YAML`)
           return

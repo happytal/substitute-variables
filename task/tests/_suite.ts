@@ -235,4 +235,22 @@ describe('Substitute variables task', () => {
     done()
   })
 
+  it('should replace variables in multi document YAML files', (done: MochaDone) => {
+    fs.writeFileSync(_tmpFile.name, yaml.safeDump(SAMPLE_FILE))
+    fs.appendFileSync(_tmpFile.name, '---\n')
+    fs.appendFileSync(_tmpFile.name, yaml.safeDump(SAMPLE_FILE))
+
+    const runner = runTask(new Map([ ['menu.value', 'REPLACED'] ]))
+
+    assert.equal(runner.succeeded, true)
+    assert.equal(runner.warningIssues.length, 0)
+    assert.equal(runner.errorIssues.length, 0)
+    
+    const content = yaml.safeLoadAll(fs.readFileSync(_tmpFile.name).toString())
+    assert.strictEqual(content[0].menu.value, 'REPLACED')
+    assert.strictEqual(content[1].menu.value, 'REPLACED')
+
+    done()
+  })
+
 })
