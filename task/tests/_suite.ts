@@ -17,6 +17,9 @@ const SAMPLE_FILE = {
       { "value": "Open", "onclick": "OpenDoc()" },
       { "value": "Close", "onclick": "CloseDoc()" }
     ]
+  },
+  "annotations": {
+    "kubernetes.io/ingress.class": "dev"
   }
 }
 
@@ -249,6 +252,21 @@ describe('Substitute variables task', () => {
     const content = yaml.safeLoadAll(fs.readFileSync(_tmpFile.name).toString())
     assert.strictEqual(content[0].menu.value, 'REPLACED')
     assert.strictEqual(content[1].menu.value, 'REPLACED')
+
+    done()
+  })
+
+  it('should replace a variable containing a slash', (done: MochaDone) => {
+    fs.writeFileSync(_tmpFile.name, JSON.stringify(SAMPLE_FILE))
+
+    const runner = runTask(new Map([ ['annotations[\'kubernetes.io/ingress.class\']', 'prod'] ]))
+
+    assert.equal(runner.succeeded, true)
+    assert.equal(runner.warningIssues.length, 0)
+    assert.equal(runner.errorIssues.length, 0)
+
+    const content = JSON.parse(fs.readFileSync(_tmpFile.name).toString())
+    assert.strictEqual(content.annotations['kubernetes.io/ingress.class'], 'prod')
 
     done()
   })

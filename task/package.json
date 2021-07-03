@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tsc && mocha tests/_suite.js"
+    "test": "TASK_TEST_TRACE=1 tsc && mocha tests/_suite.js"
   },
   "keywords": [],
   "author": "",
