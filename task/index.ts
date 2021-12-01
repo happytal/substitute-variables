@@ -1,11 +1,13 @@
 import fs = require('fs')
 import jp = require('jsonpath')
 import yaml = require('js-yaml')
+import decomment = require('decomment')
 import * as task from 'azure-pipelines-task-lib/task'
 
 function parseJsonContent(fileContent: string) {
   try {
-    return JSON.parse(fileContent)
+    const decommented = decomment(fileContent)
+    return JSON.parse(decommented)
   }
   catch (err) {
     task.debug(`File could not be parsed as JSON: ${err.message}`)

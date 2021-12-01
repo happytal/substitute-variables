@@ -23,6 +23,14 @@ const SAMPLE_FILE = {
   }
 }
 
+const JSON_WITH_COMMENTS = `
+{
+  "id": "root",
+  // A comment
+  "value": "// not a comment"
+}
+`
+
 function runTask(variables: Map<string, string>) {
   // Pass variables to tasks in a mocked environment: https://github.com/microsoft/azure-pipelines-task-lib/issues/593
   for (const [key, value] of variables.entries()) {
@@ -267,6 +275,22 @@ describe('Substitute variables task', () => {
 
     const content = JSON.parse(fs.readFileSync(_tmpFile.name).toString())
     assert.strictEqual(content.annotations['kubernetes.io/ingress.class'], 'prod')
+
+    done()
+  })
+
+  it.only('should strip comments from JSON files', (done: MochaDone) => {
+    fs.writeFileSync(_tmpFile.name, JSON_WITH_COMMENTS)
+  
+    const runner = runTask(new Map([ ['id', 'REPLACED'] ]))
+
+    assert.equal(runner.succeeded, true)
+    assert.equal(runner.warningIssues.length, 0)
+    assert.equal(runner.errorIssues.length, 0)
+
+    const content = JSON.parse(fs.readFileSync(_tmpFile.name).toString())
+    assert.strictEqual(content.id, 'REPLACED')
+    assert.strictEqual(content.value, '// not a comment')
 
     done()
   })

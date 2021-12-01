@@ -11,10 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.9.3",
+    "decomment": "^0.9.5",
     "js-yaml": "^3.13.1",
     "jsonpath": "^1.0.2"
   },
   "devDependencies": {
+    "@types/decomment": "^0.9.2",
     "@types/js-yaml": "^3.12.3",
     "@types/jsonpath": "^0.2.0",
     "@types/mocha": "^7.0.2",

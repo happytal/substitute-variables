@@ -38,6 +38,7 @@ Given this initial `example.json` file
 ```json
 {
   "id": "root",
+  // Commented JSON files are supported
   "menu": {
     "value": "File",
     "count": 10,
