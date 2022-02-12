@@ -279,7 +279,7 @@ describe('Substitute variables task', () => {
     done()
   })
 
-  it.only('should strip comments from JSON files', (done: MochaDone) => {
+  it('should strip comments from JSON files', (done: MochaDone) => {
     fs.writeFileSync(_tmpFile.name, JSON_WITH_COMMENTS)
   
     const runner = runTask(new Map([ ['id', 'REPLACED'] ]))

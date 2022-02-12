@@ -6,7 +6,7 @@ import * as task from 'azure-pipelines-task-lib/task'
 
 function parseJsonContent(fileContent: string) {
   try {
-    const decommented = decomment(fileContent)
+    const decommented = decomment(fileContent, { tolerant: true })
     return JSON.parse(decommented)
   }
   catch (err) {
