@@ -31,6 +31,8 @@ const JSON_WITH_COMMENTS = `
 }
 `
 
+const BOM = '\ufeff'
+
 function runTask(variables: Map<string, string>) {
   // Pass variables to tasks in a mocked environment: https://github.com/microsoft/azure-pipelines-task-lib/issues/593
   for (const [key, value] of variables.entries()) {
@@ -195,6 +197,21 @@ describe('Substitute variables task', () => {
     done()
   })
 
+  it('should write a JSON file with BOM as JSON with BOM', (done: MochaDone) => {
+    fs.writeFileSync(_tmpFile.name, BOM + JSON.stringify(SAMPLE_FILE))
+
+    const runner = runTask(new Map([ ['menu.value', 'REPLACED'] ]))
+
+    assert.equal(runner.succeeded, true)
+    assert.equal(runner.warningIssues.length, 0)
+    assert.equal(runner.errorIssues.length, 0)
+
+    const content = fs.readFileSync(_tmpFile.name).toString()
+    assert.strictEqual(content.substring(0, 3), BOM + '{\n')
+
+    done()
+  })
+
   it('should write a YAML file as YAML', (done: MochaDone) => {
     fs.writeFileSync(_tmpFile.name, yaml.safeDump(SAMPLE_FILE))
 
@@ -206,6 +223,21 @@ describe('Substitute variables task', () => {
 
     const content = fs.readFileSync(_tmpFile.name).toString()
     assert.strictEqual(content.substring(0, 9), 'id: root\n')
+
+    done()
+  })
+
+  it('should write a YAML with BOM file as YAML with BOM', (done: MochaDone) => {
+    fs.writeFileSync(_tmpFile.name, BOM + yaml.safeDump(SAMPLE_FILE))
+
+    const runner = runTask(new Map([ ['menu.value', 'REPLACED'] ]))
+
+    assert.equal(runner.succeeded, true)
+    assert.equal(runner.warningIssues.length, 0)
+    assert.equal(runner.errorIssues.length, 0)
+
+    const content = fs.readFileSync(_tmpFile.name).toString()
+    assert.strictEqual(content.substring(0, 10), BOM + 'id: root\n')
 
     done()
   })

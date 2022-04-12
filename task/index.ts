@@ -4,6 +4,8 @@ import yaml = require('js-yaml')
 import decomment = require('decomment')
 import * as task from 'azure-pipelines-task-lib/task'
 
+const BOM = '\ufeff'
+
 function parseJsonContent(fileContent: string) {
   try {
     const decommented = decomment(fileContent, { tolerant: true })
@@ -15,8 +17,8 @@ function parseJsonContent(fileContent: string) {
   }
 }
 
-function serializeJsonContent(jsonContent: any) {
-  return JSON.stringify(jsonContent, null, 2)
+function serializeJsonContent(jsonContent: any, withBom: boolean) {
+  return (withBom ? BOM : '') + JSON.stringify(jsonContent, null, 2)
 }
 
 function parseYamlContent(fileContent: string) {
@@ -29,8 +31,8 @@ function parseYamlContent(fileContent: string) {
   }
 }
 
-function serializeYamlContent(yamlContentArray: any) {
-  return yamlContentArray.map((yamlContent: any) => yaml.safeDump(yamlContent)).join('---\n');
+function serializeYamlContent(yamlContentArray: any, withBom: boolean) {
+  return (withBom ? BOM : '') + yamlContentArray.map((yamlContent: any) => yaml.safeDump(yamlContent)).join('---\n');
 }
 
 function findNodeParentFromJsonPath(jsonContent: any, jsonPath: jp.PathComponent[]) {
@@ -98,18 +100,23 @@ function run() {
         return
       }
       console.log(`Substituting variables in ${filePath}`)
-      const stringContent = fs.readFileSync(filePath).toString()
+      let stringContent = fs.readFileSync(filePath).toString()
+      let startsWithBom = false
+      if (stringContent.startsWith(BOM)) {
+        startsWithBom = true
+        stringContent = stringContent.substring(BOM.length)
+      }
       const jsonContent = parseJsonContent(stringContent)
       if (jsonContent) {
         substituteVariables(jsonContent)
-        fs.writeFileSync(filePath, serializeJsonContent(jsonContent))
+        fs.writeFileSync(filePath, serializeJsonContent(jsonContent, startsWithBom))
       } else {
         const yamlContentArray = parseYamlContent(stringContent)
         if (yamlContentArray && Array.isArray(yamlContentArray) && yamlContentArray.every(yamlContent => typeof yamlContent === 'object')) {
           for (const yamlContent of yamlContentArray) {
             substituteVariables(yamlContent)
           }
-          fs.writeFileSync(filePath, serializeYamlContent(yamlContentArray))
+          fs.writeFileSync(filePath, serializeYamlContent(yamlContentArray, startsWithBom))
         } else {
           task.setResult(task.TaskResult.Failed, `File ${filePath} is neither JSON nor YAML`)
           return
