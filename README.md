@@ -35,7 +35,7 @@ are ignored.
 
 Given this initial `example.json` file
 
-```json
+```jsonc
 {
   "id": "root",
   // Commented JSON files are supported
