@@ -9,8 +9,8 @@
   "author": "happytal",
   "version": {
       "Major": 1,
-      "Minor": 2,
-      "Patch": 3
+      "Minor": 3,
+      "Patch": 0
   },
   "instanceNameFormat": "Substitute variables",
   "inputs": [
