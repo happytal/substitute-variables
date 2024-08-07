@@ -47,43 +47,48 @@ function findNodeParentFromJsonPath(jsonContent: any, jsonPath: jp.PathComponent
 
 function substituteVariables(objectContent: any) {
   for (const variable of task.getVariables()) {
+    const pathExpression = decodeURIComponent(variable.name)
     let matchingPaths
     try {
-      matchingPaths = jp.paths(objectContent, variable.name, 1)
+      matchingPaths = jp.paths(objectContent, pathExpression, 1)
     } catch (err: any) {
-      task.debug(`Variable ${variable.name} is not a valid JSON path: ${err.message}`)
+      task.debug(`Variable ${pathExpression} is not a valid JSON path: ${err.message}`)
       continue
     }
     if (matchingPaths.length === 0) {
-      task.debug(`No JSON path found matching variable ${variable.name}`)
+      task.debug(`No JSON path found matching variable ${pathExpression}`)
       continue
     }
-    task.debug(`Trying to substitute variable ${variable.name}`)
+    task.debug(`Trying to substitute variable ${pathExpression}`)
     const jsonPath = matchingPaths[0]
     const node = findNodeParentFromJsonPath(objectContent, jsonPath)
     const lastFieldName = jsonPath[jsonPath.length - 1]
     const originalValue = node[lastFieldName]
-    switch (typeof originalValue) {
-      case 'string':
-        console.log(`Substituting variable ${variable.name} as string`)
-        node[lastFieldName] = variable.value
-        break
-      case 'number':
-        console.log(`Substituting variable ${variable.name} as number`)
-        node[lastFieldName] = Number(variable.value)
-        break
-      case 'boolean':
-        console.log(`Substituting variable ${variable.name} as boolean`)
-        node[lastFieldName] = variable.value == 'true'
-        break
-      case 'object':
-        console.log(`Substituting variable ${variable.name} as JSON object`)
-        try {
-          node[lastFieldName] = JSON.parse(variable.value)
-        } catch (err: any) {
-          task.debug(`Unable to convert ${variable.name} as a JSON object: ${err.message}`)
-        }
-        break
+    if (typeof variable.value === 'undefined') {
+      console.log(`Ignoring variable ${pathExpression} with undefined value`)
+    } else {
+      switch (typeof originalValue) {
+        case 'string':
+          console.log(`Substituting variable ${pathExpression} as string`)
+          node[lastFieldName] = variable.value
+          break
+        case 'number':
+          console.log(`Substituting variable ${pathExpression} as number`)
+          node[lastFieldName] = Number(variable.value)
+          break
+        case 'boolean':
+          console.log(`Substituting variable ${pathExpression} as boolean`)
+          node[lastFieldName] = variable.value == 'true'
+          break
+        case 'object':
+          console.log(`Substituting variable ${pathExpression} as JSON object`)
+          try {
+            node[lastFieldName] = JSON.parse(variable.value)
+          } catch (err: any) {
+            task.debug(`Unable to convert ${pathExpression} as a JSON object: ${err.message}`)
+          }
+          break
+      }
     }
   }
 }

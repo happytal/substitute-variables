@@ -29,6 +29,21 @@ Variable names are interpreted as [JSONPath](https://goessner.net/articles/JsonP
 When matching a node, the value of the first match is used. Variables that do not match
 are ignored.
 
+## Limitations
+
+Azure DevOps prevents using the equal (`=`) character in variable names. In order
+to use this character in a JSONPath, you can URLEncode it.
+
+For example, in this kind of expression:
+
+```
+# The actual expression
+menu.items[?(@.value=='Open')].onclick
+
+# The variable name in the variable library
+menu.items[?(@.value%3D%3D'Open')].onclick
+```
+
 ## Examples
 
 ### Substitute variables from a JSON file

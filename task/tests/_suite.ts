@@ -227,6 +227,21 @@ describe('Substitute variables task', () => {
     done()
   })
 
+  it('should replace path with script expression', (done: MochaDone) => {
+    fs.writeFileSync(_tmpFile.name, yaml.safeDump(SAMPLE_FILE))
+
+    const runner = runTask(new Map([ ['menu.items[?(@.value%3D%3D\'Open\')].onclick', 'REPLACED'] ]))
+
+    assert.equal(runner.succeeded, true)
+    assert.equal(runner.warningIssues.length, 0)
+    assert.equal(runner.errorIssues.length, 0)
+
+    const content = fs.readFileSync(_tmpFile.name).toString()
+    assert.ok(content.includes('onclick: REPLACED'))
+
+    done()
+  })
+
   it('should write a YAML with BOM file as YAML with BOM', (done: MochaDone) => {
     fs.writeFileSync(_tmpFile.name, BOM + yaml.safeDump(SAMPLE_FILE))
 
