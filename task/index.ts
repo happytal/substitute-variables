@@ -11,7 +11,7 @@ function parseJsonContent(fileContent: string) {
     const decommented = decomment(fileContent, { tolerant: true })
     return JSON.parse(decommented)
   }
-  catch (err) {
+  catch (err: any) {
     task.debug(`File could not be parsed as JSON: ${err.message}`)
     return null
   }
@@ -25,7 +25,7 @@ function parseYamlContent(fileContent: string) {
   try {
     return yaml.safeLoadAll(fileContent)
   }
-  catch (err) {
+  catch (err: any) {
     task.debug(`File could not be parsed as YAML: ${err.message}`)
     return null
   }
@@ -50,7 +50,7 @@ function substituteVariables(objectContent: any) {
     let matchingPaths
     try {
       matchingPaths = jp.paths(objectContent, variable.name, 1)
-    } catch (err) {
+    } catch (err: any) {
       task.debug(`Variable ${variable.name} is not a valid JSON path: ${err.message}`)
       continue
     }
@@ -80,7 +80,7 @@ function substituteVariables(objectContent: any) {
         console.log(`Substituting variable ${variable.name} as JSON object`)
         try {
           node[lastFieldName] = JSON.parse(variable.value)
-        } catch (err) {
+        } catch (err: any) {
           task.debug(`Unable to convert ${variable.name} as a JSON object: ${err.message}`)
         }
         break
@@ -124,7 +124,7 @@ function run() {
       }
     }
   }
-  catch (err) {
+  catch (err: any) {
     task.setResult(task.TaskResult.Failed, err.message)
   }
 }
