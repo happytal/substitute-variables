@@ -10,7 +10,7 @@
   "version": {
       "Major": 1,
       "Minor": 4,
-      "Patch": 0
+      "Patch": 1
   },
   "instanceNameFormat": "Substitute variables",
   "inputs": [
@@ -28,7 +28,7 @@
       "target": "index.js"
     },
     "Node16": {
-      "target": "bash.js"
+      "target": "index.js"
     }
   },
   "minimumAgentVersion": "2.144.0"
