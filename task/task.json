@@ -9,7 +9,7 @@
   "author": "happytal",
   "version": {
       "Major": 1,
-      "Minor": 3,
+      "Minor": 4,
       "Patch": 0
   },
   "instanceNameFormat": "Substitute variables",
@@ -26,6 +26,10 @@
   "execution": {
     "Node10": {
       "target": "index.js"
+    },
+    "Node16": {
+      "target": "bash.js"
     }
-  }
+  },
+  "minimumAgentVersion": "2.144.0"
 }
